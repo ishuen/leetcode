@@ -84,3 +84,65 @@ class Solution {
     }
 }
 
+// Runtime: 7 ms, faster than 73.57% of Java online submissions for Sliding Puzzle.
+// Memory Usage: 39.1 MB, less than 31.31% of Java online submissions for Sliding Puzzle.
+class Solution {
+    private Map<String, Integer> records;
+    public int slidingPuzzle(int[][] board) {
+        String base = "123450";
+        String start = format(board);
+        HashSet<String> visited = new HashSet<>();
+        Queue<String> queue = new LinkedList<>();
+        queue.offer(start);
+        visited.add(start);
+        int res = 0;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                String cur = queue.poll();
+                if (cur.equals(base)) {
+                    return res;
+                }
+                for (int j = 0; j < 4; j++) {
+                    String next = swap(cur, j);
+                    if (visited.contains(next)) {
+                        continue;
+                    }
+                    visited.add(next);
+                    queue.offer(next);
+                }
+            }
+            res++;
+        }
+        return -1;
+    }
+    private String swap(String key, int direction) {
+        // 0: up, 1: left, 2: down, 3: right 
+        int index = key.indexOf('0');
+        StringBuilder sb = new StringBuilder(key);
+        String temp = sb.substring(index, index + 1);
+        if (direction == 0 && index > 2) {
+            sb.replace(index, index + 1, sb.substring(index - 3, index - 2));
+            sb.replace(index - 3, index - 2, temp);
+        } else if (direction == 1 && index != 0 && index != 3) {
+            sb.replace(index, index + 1, sb.substring(index - 1, index));
+            sb.replace(index - 1, index, temp);
+        } else if (direction == 2 && index < 3) {
+            sb.replace(index, index + 1, sb.substring(index + 3, index + 4));
+            sb.replace(index + 3, index + 4, temp);
+        } else if (direction == 3 && index != 2 && index != 5) {
+            sb.replace(index, index + 1, sb.substring(index + 1, index + 2));
+            sb.replace(index + 1, index + 2, temp);
+        }
+        return sb.toString();
+    }
+    private String format(int[][] board) {
+        StringBuilder str = new StringBuilder();
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                str.append(board[i][j]);
+            }
+        }
+        return str.toString();
+    }   
+}
