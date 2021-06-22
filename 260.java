@@ -43,3 +43,23 @@ class Solution {
         return ans;
     }
 }
+
+// Runtime: 1 ms, faster than 96.70% of Java online submissions for Single Number III.
+// Memory Usage: 39.4 MB, less than 40.69% of Java online submissions for Single Number III.
+class Solution {
+    public int[] singleNumber(int[] nums) {
+        int xorString = 0;
+        for (int i = 0; i < nums.length; i++) {
+            xorString = xorString ^ nums[i];
+        }
+        int diff = xorString & -xorString;
+        int[] ans = {0, 0};
+        for (int i = 0; i < nums.length; i++) {
+            if ((diff & nums[i]) == 0) {
+                ans[0] = ans[0] ^ nums[i];
+            } else
+                ans[1] = ans[1] ^ nums[i];
+        }
+        return ans;
+    }
+}
