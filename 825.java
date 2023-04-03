@@ -37,28 +37,61 @@
 // 1 <= n <= 2 * 104
 // 1 <= ages[i] <= 120
 //
-// Runtime: 2 ms, faster than 86.94% of Java online submissions for Friends Of Appropriate Ages.
-// Memory Usage: 42 MB, less than 30.88% of Java online submissions for Friends Of Appropriate Ages.
+
+
+
+// Runtime 22 ms Beats 46.97%
+// Memory 46.8 MB Beats 13.13%
 class Solution {
     public int numFriendRequests(int[] ages) {
-        int count = 0;
-        int[] combinedAges = new int[120];
+        Map<Integer, Integer> ageCount = new HashMap<>();
+        int sum = 0;
         for (int i = 0; i < ages.length; i++) {
-            combinedAges[ages[i] - 1]++;
+            ageCount.put(ages[i], ageCount.getOrDefault(ages[i], 0) + 1);
         }
-        int start = 0;
-        for (int i = 0; i < 120; i++) {
-            if (combinedAges[i] == 0) continue;
-            for (int j = start; j <= i; j++) {
-                if (combinedAges[j] == 0) continue;
-                // i = x, j = y
-                if (j + 1 <= (i + 1) / 2 + 7) {
-                    start = j + 1;
-                    continue;
+        Set<Integer> keys = ageCount.keySet();
+        for (Integer key1: keys) {
+            for (Integer key2: keys) {
+                if (key2 <= 0.5 * key1 + 7) continue;
+                else if (key2 > key1) continue;
+                else if (key2 > 100 && key1 < 100) continue;
+                else if (key1 == key2) {
+                    int count = ageCount.get(key1);
+                    sum = sum + count * (count - 1);
                 }
-                count = i == j ? count + combinedAges[i] * (combinedAges[j] - 1) : count + combinedAges[i] * combinedAges[j];
+                else {
+                    sum = sum + ageCount.get(key1) * ageCount.get(key2);
+                }
             }
         }
-        return count;
+        return sum;
+    }
+}
+
+// Runtime 4 ms Beats 68.69%
+// Memory 45.2 MB Beats 94.44%
+class Solution {
+    public int numFriendRequests(int[] ages) {
+        int[] ageCount = new int[121];
+        int sum = 0;
+        for (int i = 0; i < ages.length; i++) {
+            ageCount[ages[i]]++;
+        }
+        for (int i = 1; i < ageCount.length; i++) {
+            if (ageCount[i] == 0) continue;
+            for (int j = 1; j < ageCount.length; j++) {
+                if (ageCount[j] == 0) continue;
+                if (j <= 0.5 * i + 7) continue;
+                else if (j > i) continue;
+                else if (j > 100 && i < 100) continue;
+                else if (i == j) {
+                    sum = sum + ageCount[i] * (ageCount[i] - 1);
+                }
+                else {
+                    sum = sum + ageCount[i] * ageCount[j];
+                }
+            }
+        }
+        return sum;
     }
 }
