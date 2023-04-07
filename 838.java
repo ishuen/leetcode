@@ -109,3 +109,41 @@ class Solution {
         return sb.toString();
     }
 }
+
+// Runtime 18 ms Beats 78.93%
+// Memory 43.4 MB Beats 87.43%
+class Solution {
+    public String pushDominoes(String dominoes) {
+        StringBuilder ans = new StringBuilder(dominoes);
+        int length = dominoes.length();
+        char[] transitions = new char[length + 2];
+        int[] transIndex = new int[length + 2];
+        int transCount = 1;
+        transIndex[0] = -1;
+        transitions[0] = 'L';
+        for (int i = 0; i < length; i++) {
+            if (dominoes.charAt(i) != '.') {
+                transIndex[transCount] = i;
+                transitions[transCount] = dominoes.charAt(i);
+                transCount++;
+            }
+        }
+        transitions[transCount] = 'R';
+        transIndex[transCount] = length;
+        for (int i = 0; i < transCount; i++) {
+            int leftIndex = transIndex[i];
+            int rightIndex = transIndex[i + 1];
+            if (transitions[i] == transitions[i + 1]) {
+                for (int j = leftIndex + 1; j < rightIndex; j++) {
+                    ans.setCharAt(j, transitions[i]);
+                }
+            } else if (transitions[i] == 'R' && transitions[i + 1] == 'L') {
+                for (int j = leftIndex + 1; j < rightIndex; j++) {
+                    char direction = (j - leftIndex == rightIndex - j) ? '.' : ((j - leftIndex < rightIndex - j) ? 'R' : 'L');
+                    ans.setCharAt(j, direction);
+                }
+            }
+        }
+        return ans.toString();
+    }
+}

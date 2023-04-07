@@ -87,3 +87,37 @@ class Solution {
         return max;
     }
 }
+
+// Runtime 31 ms Beats 88.17% Memory 42.6 MB Beats 43.20%
+class Solution {
+    public int largestOverlap(int[][] img1, int[][] img2) {
+        int width = img1.length;
+        int moves = 2 * width - 1;
+        int max = Integer.MIN_VALUE;
+        for (int i = 1; i <= moves; i++) {
+            for (int j = 1; j <= moves; j++) {
+                max = Math.max(max, calculateOverlap(i, j, img1, img2));
+            }
+        }
+        return max;
+    }
+
+    private int calculateOverlap(int row, int col, int[][] img1, int[][] img2) {
+        int width = img1.length;
+        int img1RowStart = row > width ? row - width : 0;
+        int img1ColStart = col > width ? col - width : 0;
+        int img2RowStart = row > width ? 0 : width - row;
+        int img2ColStart = col > width ? 0 : width - col;
+        int rowCount = row > width ? 2 * width - row : row;
+        int colCount = col > width ? 2 * width - col : col;
+        int count = 0;
+        for (int i = 0; i < rowCount; i++) {
+            for (int j = 0; j < colCount; j++) {
+                if (img1[img1RowStart + i][img1ColStart + j] == 1 && img2[img2RowStart + i][img2ColStart + j] == 1) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+}
