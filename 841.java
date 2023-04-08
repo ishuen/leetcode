@@ -54,3 +54,24 @@ class Solution {
         return true;
     }
 }
+
+// Runtime 3 ms Beats 24.68%
+// Memory 42.7 MB Beats 30.29%
+class Solution {
+    public boolean canVisitAllRooms(List<List<Integer>> rooms) {
+        Stack<Integer> roomToVisit = new Stack<>();
+        roomToVisit.push(0);
+        Set<Integer> visited = new HashSet<>();
+        while(!roomToVisit.isEmpty()) {
+            Integer cur = roomToVisit.pop();
+            visited.add(cur);
+            List<Integer> keys = rooms.get(cur);
+            for (Integer key: keys) {
+                if (!visited.contains(key)) {
+                    roomToVisit.push(key);
+                }
+            }
+        }
+        return visited.size() == rooms.size();
+    }
+}
