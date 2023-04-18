@@ -82,3 +82,35 @@ class Solution {
         return str.toString();
     }
 }
+
+// Runtime 15 ms Beats 66.85%
+// Memory 43 MB Beats 82.93%
+class Solution {
+    private class CharCount {
+        char c;
+        int count = 0;
+        CharCount(char c, int count) {
+            this.c = c;
+            this.count = count;
+        }
+    }
+    public String frequencySort(String s) {
+        Map<Character, Integer> map = new HashMap<>();
+        SortedSet<CharCount> set = new TreeSet<>((a, b) -> b.count != a.count ? b.count - a.count: a.c - b.c);
+
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            map.put(c, map.getOrDefault(c, 0) + 1);
+        }
+        for (Character key: map.keySet()) {
+            set.add(new CharCount(key, map.get(key)));
+        }
+        StringBuilder sb = new StringBuilder();
+        for (CharCount cc: set) {
+            for (int i = 0; i < cc.count; i++) {
+                sb.append(cc.c);
+            }
+        }
+        return sb.toString();
+    }
+}
