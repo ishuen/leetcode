@@ -119,3 +119,39 @@ class Solution {
         }
     }
 }
+
+
+// Runtime 13ms Beats 7.97%of users with Java
+// Memory 44.76MB Beats 25.72%of users with Java
+class Solution {
+    public int[] findMode(TreeNode root) {
+        Stack<TreeNode> stack = new Stack<>();
+        stack.push(root);
+        Map<Integer, Integer> map = new HashMap<>();
+        int curValue = Integer.MIN_VALUE;
+        while(!stack.isEmpty()) {
+            TreeNode cur = stack.pop();
+            int count = map.getOrDefault(cur.val, 0);
+            count++;
+            map.put(cur.val, count);
+            if (cur.left != null) {
+                stack.push(cur.left);
+            }
+            if (cur.right != null) {
+                stack.push(cur.right);
+            }
+        }
+        List<Integer> ans = new ArrayList<>();
+        int max = 0;
+        for (Map.Entry<Integer, Integer> entry: map.entrySet()) {
+            if (entry.getValue() > max) {
+                max = entry.getValue();
+                ans = new ArrayList<>();
+                ans.add(entry.getKey());
+            } else if (entry.getValue() == max){
+                ans.add(entry.getKey());
+            }
+        }
+        return ans.stream().mapToInt(Integer::intValue).toArray();
+    }
+}
