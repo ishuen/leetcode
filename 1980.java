@@ -30,10 +30,10 @@
 // All the strings of nums are unique.
 //
 // Runtime 2ms Beats 55.09%of users with Java
-// Memory 41.04MB Beats 29.45%of users with Java
+// Memory 40.52MB Beats 50.91%of users with Java
 class Solution {
     public String findDifferentBinaryString(String[] nums) {
-        int max = (int) Math.pow(2, nums[0].length() + 1) - 1;
+        int max = (int) Math.pow(2, nums[0].length());
         Set<String> set = new HashSet<>();
         for (String str: nums) {
             set.add(str);
