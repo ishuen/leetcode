@@ -53,3 +53,31 @@ class Solution {
     }
 }
 
+// Runtime 0 ms Beats 100.00% of users with Java
+// Memory 45.38 MB Beats 5.16% of users with Java
+class Solution {
+    public int trap(int[] height) {
+        int left = 0;
+        int right = height.length - 1;
+        int water = 0;
+        while (left < right) {
+            if (height[left] <= height[right]) {
+                int next = left + 1;
+                while (height[left] > height[next]) {
+                    water += height[left] - height[next];
+                    next++;
+                }
+                left = next;
+            } else {
+                int next = right - 1;
+                while (height[right] > height[next]) {
+                    water += height[right] - height[next];
+                    next--;
+                }
+                right = next;
+            }
+        }
+        return water;
+    }
+}
+
