@@ -65,3 +65,40 @@ class Solution {
         }
     }
 }
+
+// Runtime 0 ms Beats 100.00%
+// Memory 42.56 MB Beats 15.59%
+class Solution {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int len2 = nums1.length;
+        for (int i = 0; i < m; i++) {
+            if (len2 - i - 1 > 0) {
+                nums1[len2 - i - 1] = nums1[m - i - 1];
+            }
+        }
+        int pointer1 = 0;
+        int pointer2 = 0;
+        int pointer3 = len2 - m;
+        int len = nums1.length;
+        while (pointer2 < n && pointer1 < len && pointer3 < len && pointer3 > pointer1) {
+            if (nums1[pointer3] <= nums2[pointer2]) {
+                nums1[pointer1] = nums1[pointer3];
+                pointer3++;
+            } else {
+                nums1[pointer1] = nums2[pointer2];
+                pointer2++;
+            }
+			pointer1++;
+        }
+        while (pointer2 < n && pointer1 < len) {
+            nums1[pointer1] = nums2[pointer2];
+            pointer1++;
+            pointer2++;
+        }
+        while (pointer3 < len && pointer1 < len && pointer3 > pointer1) {
+            nums1[pointer1] = nums1[pointer3];
+            pointer3++;
+            pointer1++;
+        }
+    }
+}
