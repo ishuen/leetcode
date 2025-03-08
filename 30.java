@@ -77,3 +77,99 @@ class Solution {
         return true;
     }
 }
+
+
+
+class Solution {
+    public List<Integer> findSubstring(String s, String[] words) {
+        List<Integer> ans = new ArrayList<>();
+        Map<String, Integer> targetCounts = new HashMap<>();
+        for (String word: words) {
+            targetCounts.put(word, targetCounts.getOrDefault(word, 0) + 1);
+        }
+        int len = words[0].length();
+        int totalLen = len * words.length;
+        for (int start = 0; start < s.length() - totalLen + 1; start++) {
+            Map<String, Integer> currentCounts = new HashMap<>();
+            int count = 0;
+            while (count < words.length) {
+                String key = s.substring(start + count * len, start + (count + 1) * len);
+                if (!targetCounts.containsKey(key)) break;
+                int current = currentCounts.getOrDefault(key, 0) + 1;
+                currentCounts.put(key, current);
+                if (currentCounts.get(key) > targetCounts.get(key)) break;
+                count++;
+            }
+            if (count == words.length) {
+                ans.add(start);
+            }
+        }
+        return ans;
+    }
+}
+
+
+// Runtime 7 ms Beats 99.49%
+// Memory 45.87 MB Beats 31.85%
+class Solution {
+	public List<Integer> findSubstring(String s, String[] words) {
+		List<Integer> indexes = new ArrayList<>();
+	    int total = s.length();
+	    int len = words[0].length();
+		if (words.length == 0 || total < len * words.length) {
+			return indexes;
+		}
+		int last = total - len + 1;
+		Map<String, Integer> mapping = new HashMap<>();
+		int [][] table = new int[2][words.length];
+		int uniqueWords = 0, index = 0;
+		for (int i = 0; i < words.length; ++i) {
+			Integer mapped = mapping.get(words[i]);
+			if (mapped == null) {
+				uniqueWords++;
+				mapping.put(words[i], index);
+				mapped = index++;
+			}
+		    table[0][mapped]++;
+		}
+	
+		int [] smapping = new int[last];
+		for (int i = 0; i < last; ++i) {
+			String section = s.substring(i, i + len);
+			Integer mapped = mapping.get(section);
+			if (mapped == null) {
+				smapping[i] = -1;
+			} else {
+				smapping[i] = mapped;
+			}
+		}
+	
+		for (int i = 0; i < len; ++i) {
+			int currentUnique = uniqueWords;
+			int left = i, right = i;
+			Arrays.fill(table[1], 0);
+	        // min window substring problem
+			while (right < last) {
+				while (currentUnique > 0 && right < last) {
+					int target = smapping[right];
+					if (target != -1 && ++table[1][target] == table[0][target]) {
+						currentUnique--;
+					}
+					right += len;
+				}
+				while (currentUnique == 0 && left < right) {
+					int target = smapping[left];
+					if (target != -1 && --table[1][target] == table[0][target] - 1) {
+						int length = right - left;
+						if ((length / len) ==  words.length) {
+							indexes.add(left);
+						}
+						currentUnique++;
+					}
+					left += len;
+				}
+			}
+		}
+		return indexes;
+	}
+}

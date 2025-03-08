@@ -140,3 +140,77 @@ class Solution {
         return fit ? s.substring(minStart, minEnd + 1) : "";
     }
 }
+
+
+// Runtime 4 ms Beats 79.34%
+// Memory 45.14 MB Beats 54.42%
+class Solution {
+    public String minWindow(String s, String t) {
+        if (s.length() < t.length()) {
+            return "";
+        }
+        if (s.equals(t)) return s;
+        int L = 0;
+        int R = 0;
+        int min = s.length() + 1;
+        int count = 0;
+        String minString = "";
+        int[][] countTable = new int[2][52]; // 1st row = target, 2nd = current
+        Arrays.fill(countTable[0], 0);
+        Arrays.fill(countTable[1], 0);
+        for (int i = 0; i < t.length(); i++) {
+            addToTable(t.charAt(i), countTable[0]);
+        }
+        while (L <= R && R < s.length() && L < s.length()) {
+            char c = s.charAt(R);
+            int index = findIndexFromTable(c);
+            if (countTable[0][index] <= countTable[1][index]) {
+                countTable[1][index]++;
+                R++;
+                continue;    
+            }
+            countTable[1][index]++;
+            count++;
+            if (count < t.length()) {
+                R++;
+                continue;
+            }
+            int indexL = findIndexFromTable(s.charAt(L));
+            while (countTable[0][indexL] < countTable[1][indexL]) {
+                countTable[1][indexL]--;
+                L++;
+                indexL = findIndexFromTable(s.charAt(L));
+            } 
+            if (R - L + 1 < min) {
+                minString = s.substring(L, R + 1);
+                min = R - L + 1;
+            }
+            if (countTable[0][indexL] >= countTable[1][indexL] && countTable[1][indexL] > 0) {
+                countTable[1][indexL]--;
+                count = count - 2;
+                L++;
+                countTable[1][index]--;
+            }
+        }
+        return minString;
+    }
+
+    private void addToTable(char c, int[] row) {
+        // [A..Z, a..z]
+        int upper = c - 'A';
+        int lower = c - 'a';
+        if (upper < 26 && upper >= 0) {
+            row[upper]++;
+        } else {
+            row[lower + 26]++;
+        }
+    }
+    private int findIndexFromTable(char c) {
+        int upper = c - 'A';
+        int lower = c - 'a';
+        if (upper < 26 && upper >= 0) {
+            return upper;
+        }
+        return lower + 26;
+    }
+}
