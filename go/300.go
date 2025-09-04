@@ -1,0 +1,70 @@
+// 300. Longest Increasing Subsequence
+
+// Given an integer array nums, return the length of the longest strictly increasing subsequence.
+
+ 
+
+// Example 1:
+
+// Input: nums = [10,9,2,5,3,7,101,18]
+// Output: 4
+// Explanation: The longest increasing subsequence is [2,3,7,101], therefore the length is 4.
+// Example 2:
+
+// Input: nums = [0,1,0,3,2,3]
+// Output: 4
+// Example 3:
+
+// Input: nums = [7,7,7,7,7,7,7]
+// Output: 1
+ 
+
+// Constraints:
+
+// 1 <= nums.length <= 2500
+// -104 <= nums[i] <= 104
+ 
+
+// Follow up: Can you come up with an algorithm that runs in O(n log(n)) time complexity?
+
+// Runtime 46 ms Beats 14.62%
+// Memory 5.48 MB Beats 23.54%
+func lengthOfLIS(nums []int) int {
+    lens := make([]int, len(nums))
+    lens[0] = 1
+    maxLen := 1
+    for i := 1; i < len(nums); i++ {
+        for j := 0; j < i; j++ {
+            if nums[j] < nums[i] {
+                lens[i] = max(lens[i], lens[j] + 1)
+                maxLen = max(maxLen, lens[i])
+            } else {
+                lens[i] = max(lens[i], 1)
+            }
+        }
+    }
+    return maxLen
+}
+
+// Runtime 0 ms Beats 100.00%
+// Memory 5.06 MB Beats 93.73%
+func lengthOfLIS(nums []int) int {
+    lens := make([]int, len(nums))
+    lens[0] = nums[0]
+    last := 0
+    for i := 1; i < len(nums); i++ {
+        if lens[last] < nums[i] {
+            lens[last + 1] = nums[i]
+            last++
+        } else {
+            for j := last; j >= 0; j-- {
+                if j > 0 && lens[j] > nums[i] && lens[j - 1] < nums[i] {
+                    lens[j] = nums[i]
+                } else if j == 0 && lens[j] > nums[i] {
+                    lens[j] = nums[i]
+                }
+            }
+        }
+    }
+    return last + 1
+}
